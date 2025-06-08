@@ -13,5 +13,6 @@ const createServiceSchema = z.object({
   durationMinutes: z.number().min(1).optional(),
   customFields: z.array(customFieldSchema).optional(),
 });
+const updateServiceSchema = createServiceSchema.partial();
 
-module.exports = { createServiceSchema };
+module.exports = { createServiceSchema, updateServiceSchema };
