@@ -8,7 +8,7 @@ function validateRequest(schema) {
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({
-          message: "Validation error",
+          message: "Validation failed",
           errors: error.errors,
         });
       }
