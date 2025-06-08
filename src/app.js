@@ -5,7 +5,10 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // frontend URL
+  credentials: true               // habilita cookies/autenticación
+}));
 app.use(express.json());
 
 // Middleware de logging

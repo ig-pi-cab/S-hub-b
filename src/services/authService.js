@@ -14,15 +14,31 @@ async function registerUser({ name, email, password, role }) {
     name,
     email,
     passwordHash,
-    role: role || "provider"
+    roles: ["client", "provider"],
+    activeRole: role // ✅ CORRECTO
   });
 
   await user.save();
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      roles: user.roles,
+      activeRole: user.activeRole,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
   return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      roles: user.roles,
+      activeRole: user.activeRole,
+    },
   };
 }
 async function loginUser({ email, password }) {
@@ -55,5 +71,35 @@ async function loginUser({ email, password }) {
     }
   };
 }
+async function switchUserRole(userId, newRole) {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
 
-module.exports = { registerUser, loginUser };
+  if (!user.roles.includes(newRole)) {
+    const err = new Error("User does not have the requested role");
+    err.status = 403;
+    throw err;
+  }
+
+  user.activeRole = newRole;
+  await user.save();
+
+  const token = jwt.sign(
+    { id: user._id, roles: user.roles, activeRole: newRole },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  return {
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      roles: user.roles,
+      activeRole: newRole,
+    }
+  };
+}
+
+module.exports = { registerUser, loginUser , switchUserRole};
