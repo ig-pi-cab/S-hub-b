@@ -10,8 +10,7 @@ const validateRequest = require("../middlewares/validateRequest");
 const authMiddleware = require("../middlewares/authMiddleware");
 const { createBookingSchema } = require("../validations/bookingSchemas");
 const { requireRole } = require("../middlewares/roleAuth");
-console.log("typeof requireRole:", typeof requireRole);
-console.log("typeof requireRole('provider'):", typeof requireRole("provider"));
+
 const router = express.Router();
 router.use(authMiddleware);
 
