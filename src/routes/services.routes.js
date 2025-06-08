@@ -6,9 +6,9 @@ const { createServiceSchema, updateServiceSchema } = require("../validations/ser
 
 const router = express.Router();
 
-router.use(authMiddleware);
-router.post("/", validateRequest(createServiceSchema), create);
-router.get("/", list);
-router.patch("/:id", validateRequest(updateServiceSchema), update);
-router.delete("/:id", remove);
+router.get("/", authMiddleware, list);
+router.post("/", authMiddleware, validateRequest(createServiceSchema), create);
+router.patch("/:id", authMiddleware, validateRequest(updateServiceSchema), update);
+router.delete("/:id", authMiddleware, remove);
+
 module.exports = router;

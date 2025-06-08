@@ -9,7 +9,17 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
   },
   passwordHash: { type: String, required: true },
-  role: { type: String, enum: ["provider", "customer"], default: "provider" },
+  roles: {
+    type: [String],
+    default: ['client'],
+    enum: ['client', 'provider'],
+  },
+  activeRole: {
+    type: String,
+    enum: ['client', 'provider'],
+    default: null,
+  },
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

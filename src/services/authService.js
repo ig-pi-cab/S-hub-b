@@ -32,8 +32,14 @@ async function loginUser({ email, password }) {
   const isValid = await bcrypt.compare(password, user.passwordHash);
   if (!isValid) throw new Error("Invalid credentials");
 
+  const activeRole = user.activeRole || user.roles[0];
+
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    {
+      id: user._id,
+      roles: user.roles,
+      activeRole,
+    },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -44,8 +50,10 @@ async function loginUser({ email, password }) {
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role
+      roles: user.roles,
+      activeRole,
     }
   };
 }
+
 module.exports = { registerUser, loginUser };

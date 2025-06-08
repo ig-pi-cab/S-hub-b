@@ -8,16 +8,20 @@ async function create(req, res, next) {
     next(err);
   }
 }
-
 async function list(req, res, next) {
   try {
-    const services = await getServicesByProvider(req.user.id);
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const userId = req.user.id;
+    const services = await getServicesByProvider(userId);
+
     res.json({ services });
   } catch (err) {
     next(err);
   }
 }
-
 async function update(req, res, next) {
   try {
     const updated = await updateService(req.params.id, req.user.id, req.body);
@@ -26,7 +30,6 @@ async function update(req, res, next) {
     next(err);
   }
 }
-
 async function remove(req, res, next) {
   try {
     await deleteService(req.params.id, req.user.id);
