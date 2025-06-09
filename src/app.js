@@ -4,6 +4,10 @@ const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
+const passport = require("passport");
+require("./middlewares/googleStrategy"); // 🔁 Requiere e inicializa la estrategia
+
+app.use(passport.initialize());
 
 app.use(cors({
   origin: "http://localhost:5173", // frontend URL
